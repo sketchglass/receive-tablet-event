@@ -5,12 +5,17 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "rebuild": "electron-rebuild",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "electron-prebuilt": "^1.2.7"
+    "electron-prebuilt": "^1.2.7",
+    "electron-rebuild": "^1.1.5"
+  },
+  "dependencies": {
+    "intercept-tablet-event": ".."
   }
 }

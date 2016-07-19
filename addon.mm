@@ -10,6 +10,8 @@ void intercept(const Nan::FunctionCallbackInfo<v8::Value> &info) {
   char *buf = node::Buffer::Data(info[0]);
   void *handle = *reinterpret_cast<void **>(buf);
   std::cout << handle << std::endl;
+
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 void init(v8::Local<v8::Object> exports) {
