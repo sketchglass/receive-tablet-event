@@ -8,7 +8,8 @@ void intercept(const Nan::FunctionCallbackInfo<v8::Value> &info) {
   }
 
   char *buf = node::Buffer::Data(info[0]);
-  std::cout << buf << std::endl;
+  void *handle = *reinterpret_cast<void **>(buf);
+  std::cout << handle << std::endl;
 }
 
 void init(v8::Local<v8::Object> exports) {
