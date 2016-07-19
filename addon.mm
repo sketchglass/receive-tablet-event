@@ -1,13 +1,16 @@
 #include <nan.h>
 #include <iostream>
+#include <set>
 #import <Cocoa/Cocoa.h>
 #import <objc/runtime.h>
+
+std::set<NSWindow *> targetWindows;
 
 @implementation NSWindow(InterceptTabletEvent)
 
 -(void)sendEventIntercept:(NSEvent *)event
 {
-  auto pos = event.locationInWindow;
+  CGPoint pos = event.locationInWindow;
   std::cout << "event at (" << pos.x << "," << pos.y << ")" << std::endl;
   [self sendEventIntercept:event];
 }
@@ -33,8 +36,12 @@ void intercept(const Nan::FunctionCallbackInfo<v8::Value> &info) {
   }
 
   char *buf = node::Buffer::Data(info[0]);
-  void *handle = *reinterpret_cast<void **>(buf);
-  std::cout << handle << std::endl;
+  NSView *view = *reinterpret_cast<NSView **>(buf);
+  NSWindow *window = view.window;
+
+  std::cout << window << std::endl;
+
+  targetWindows.insert(window);
 
   info.GetReturnValue().Set(Nan::Undefined());
 }
