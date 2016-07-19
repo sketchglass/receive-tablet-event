@@ -1,7 +1,6 @@
 {
   "name": "intercept-tablet-event",
   "version": "0.1.0",
-  "description": "",
   "main": "index.js",
   "author": "Ryohei Ikegami <iofg2100@gmail.com>",
   "license": "MIT",
@@ -10,7 +9,21 @@
     "nan": "^2.4.0"
   },
   "scripts": {
-    "test": "node index.js"
+    "test": "node index.js",
+    "install": "node-gyp rebuild"
   },
-  "gypfile": true
+  "gypfile": true,
+  "directories": {
+    "example": "example"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seanchas116/intercept-tablet-event.git"
+  },
+  "bugs": {
+    "url": "https://github.com/seanchas116/intercept-tablet-event/issues"
+  },
+  "homepage": "https://github.com/seanchas116/intercept-tablet-event#readme",
+  "description": ""
 }
