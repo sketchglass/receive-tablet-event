@@ -17,4 +17,4 @@ void init(v8::Local<v8::Object> exports) {
                Nan::New<v8::FunctionTemplate>(intercept)->GetFunction());
 }
 
-NODE_MODULE(tablet_event_interceptor, init)
+NODE_MODULE(intercept_tablet_event, init)

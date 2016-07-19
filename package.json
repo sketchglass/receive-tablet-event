@@ -1,5 +1,5 @@
 {
-  "name": "tablet-event-interceptor",
+  "name": "intercept-tablet-event",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",

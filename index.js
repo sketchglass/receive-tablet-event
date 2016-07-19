@@ -1,3 +1,3 @@
-const addon = require('bindings')('tablet_event_interceptor.node')
+const addon = require('bindings')('intercept_tablet_event.node')
 
 addon.intercept(new Buffer("hogehoge"))
