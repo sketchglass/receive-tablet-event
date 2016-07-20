@@ -10,7 +10,7 @@ function createWindow() {
 
   const receiver = new TabletEventReceiver(win.getNativeWindowHandle());
   receiver.on("move", (ev) => {
-    console.log(ev.clientX, ev.clientY, ev.pressure, ev.shiftKey);
+    console.log(ev);
   });
 
   win.loadURL(`file://${__dirname}/index.html`);
