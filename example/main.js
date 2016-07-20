@@ -1,7 +1,7 @@
 const electron = require('electron');
 const {app} = electron;
 const {BrowserWindow} = electron;
-const {TabletEventReceiver} = require("..");
+const {TabletEventReceiver} = require("intercept-tablet-event");
 
 let win;
 
