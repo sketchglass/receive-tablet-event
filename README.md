@@ -12,6 +12,8 @@ Receive native digitizer (tablet) event in Node.js (mainly for Electron)
 
 ```
 npm install --save seanchas116/receive-tablet-event
+
+# Don't forget to rebuild native module against Electron
 npm install --save-dev electron-rebuild
 $(npm bin)/electron-rebuild -f
 ```
