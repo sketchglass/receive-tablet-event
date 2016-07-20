@@ -12,7 +12,8 @@
   },
   "scripts": {
     "test": "node index.js",
-    "install": "node-gyp rebuild"
+    "install": "node-gyp rebuild",
+    "example:start": "cd example && npm start"
   },
   "gypfile": true,
   "directories": {

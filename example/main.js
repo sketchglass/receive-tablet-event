@@ -1,13 +1,17 @@
 const electron = require('electron');
 const {app} = electron;
 const {BrowserWindow} = electron;
-const tablet = require("intercept-tablet-event");
+const {TabletEventReceiver} = require("..");
 
 let win;
 
 function createWindow() {
   win = new BrowserWindow({width: 800, height: 600});
-  //tablet.intercept(win.getNativeWindowHandle());
+
+  const receiver = new TabletEventReceiver(win.getNativeWindowHandle());
+  receiver.on("move", (ev) => {
+    console.log(ev.x, ev.y, ev.pressure);
+  });
 
   win.loadURL(`file://${__dirname}/index.html`);
 

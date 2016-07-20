@@ -1,9 +1,13 @@
 import {EventEmitter} from "events";
 
-type TabletEventTypes = "enterProximity" | "leaveProximity" | "down" | "up" | "move";
+type PointerTypes = "eraser" | "pen" | "cursor" | "unknown";
+
+export interface ProximityEvent {
+  pointerType: PointerTypes;
+  pointerId: number;
+}
 
 export interface TabletEvent {
-  type: TabletEventTypes;
   altKey: boolean;
   ctrlKey: boolean;
   metaKey: boolean;
@@ -15,10 +19,15 @@ export interface TabletEvent {
   pressure: number;
   tiltX: number;
   tiltY: number;
+  pointerType: PointerTypes;
   pointerId: number;
 }
 
 export declare class TabletEventReceiver extends EventEmitter {
-  constructor(window: Buffer);
-  on(name: "event", callback: (event: TabletEvent) => void);
+  constructor(windowHandle: Buffer);
+  on(name: "enterProximity", callback: (event: ProximityEvent) => void);
+  on(name: "leaveProximity", callback: (event: ProximityEvent) => void);
+  on(name: "down", callback: (event: TabletEvent) => void);
+  on(name: "up", callback: (event: TabletEvent) => void);
+  on(name: "move", callback: (event: TabletEvent) => void);
 }

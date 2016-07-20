@@ -6,10 +6,25 @@
 
 typedef Nan::Persistent<v8::Function, v8::CopyablePersistentTraits<v8::Function> > FunctionPersistent;
 
-std::map<NSWindow *, FunctionPersistent> callbacks;
+std::map<NSWindow *, FunctionPersistent> emitCallbacks;
 
-void makeEventCallback(
-  NSWindow *window,
+void emitProximityEvent(
+  const v8::Local<v8::Function> &func,
+  const char *type,
+  const char *pointerType,
+  int pointerId
+) {
+  v8::Local<v8::Object> event = Nan::New<v8::Object>();
+
+  event->Set(Nan::New("pointerType").ToLocalChecked(), Nan::New(pointerType).ToLocalChecked());
+  event->Set(Nan::New("pointerId").ToLocalChecked(), Nan::New(pointerId));
+
+  v8::Local<v8::Value> argv[] = { Nan::New(type).ToLocalChecked(), event };
+  Nan::MakeCallback(Nan::GetCurrentContext()->Global(), func, sizeof(argv), argv);
+}
+
+void emitTabletEvent(
+  const v8::Local<v8::Function> &func,
   const char *type,
   bool altKey,
   bool ctrlKey,
@@ -20,16 +35,10 @@ void makeEventCallback(
   double pressure,
   double tiltX,
   double tiltY,
+  const char *pointerType,
   int pointerId
 ) {
-  if (callbacks.find(window) == callbacks.end()) {
-    return;
-  }
-
-  v8::Local<v8::Function> func = Nan::New(callbacks[window]);
   v8::Local<v8::Object> event = Nan::New<v8::Object>();
-
-  event->Set(Nan::New("type").ToLocalChecked(), Nan::New(type).ToLocalChecked());
 
   event->Set(Nan::New("altKey").ToLocalChecked(), Nan::New(altKey));
   event->Set(Nan::New("ctrlKey").ToLocalChecked(), Nan::New(ctrlKey));
@@ -44,85 +53,89 @@ void makeEventCallback(
   event->Set(Nan::New("tiltX").ToLocalChecked(), Nan::New(tiltX));
   event->Set(Nan::New("tiltY").ToLocalChecked(), Nan::New(tiltY));
 
+  event->Set(Nan::New("pointerType").ToLocalChecked(), Nan::New(pointerType).ToLocalChecked());
   event->Set(Nan::New("pointerId").ToLocalChecked(), Nan::New(pointerId));
 
-  v8::Local<v8::Value> argv[] = { event };
+  v8::Local<v8::Value> argv[] = { Nan::New(type).ToLocalChecked(), event };
   Nan::MakeCallback(Nan::GetCurrentContext()->Global(), func, sizeof(argv), argv);
+}
+
+const char *pointerTypeString(NSPointingDeviceType type) {
+  switch (type) {
+    case NSPenPointingDevice:
+      return "pen";
+    case NSCursorPointingDevice:
+      return "cursor";
+    case NSEraserPointingDevice:
+      return "eraser";
+    default:
+      return "unknown";
+  }
 }
 
 @implementation NSWindow(InterceptTabletEvent)
 
 -(void)sendEventIntercept:(NSEvent *)event
 {
-  switch (event.type) {
-    case NSTabletProximity: {
-      const char *type;
-      if (event.enteringProximity) {
-        type = "enterProximity";
-      } else {
-        type = "leaveProximity";
+  if (emitCallbacks.find(self) != emitCallbacks.end()) {
+
+    switch (event.type) {
+      case NSTabletProximity: {
+        const char *type;
+        if (event.enteringProximity) {
+          type = "enterProximity";
+        } else {
+          type = "leaveProximity";
+        }
+        std::cout << "tablet proximity" << std::endl;
+        emitProximityEvent(Nan::New(emitCallbacks[self]), type, pointerTypeString(event.pointingDeviceType), event.uniqueID);
+        break;
       }
-      std::cout << "tablet proximity" << std::endl;
-      makeEventCallback(
-        self, type,
-        false, false, false, false,
-        0, 0, 0, 0, 0,
-        event.deviceID
-      );
-      break;
-    }
-    case NSLeftMouseDown:
-    case NSRightMouseDown:
-    case NSLeftMouseUp:
-    case NSRightMouseUp:
-    case NSMouseMoved:
-    case NSTabletPoint:
-    case NSLeftMouseDragged:
-    case NSRightMouseDragged:
-    {
-      const char *type;
-      switch (event.type) {
-        case NSLeftMouseDown:
-        case NSRightMouseDown:
-          type = "down";
-          break;
-        case NSLeftMouseUp:
-        case NSRightMouseUp:
-          type = "up";
-          break;
-        default:
-          type = "move";
-          break;
+      case NSLeftMouseDown:
+      case NSRightMouseDown:
+      case NSLeftMouseUp:
+      case NSRightMouseUp:
+      case NSMouseMoved:
+      case NSTabletPoint:
+      case NSLeftMouseDragged:
+      case NSRightMouseDragged:
+      {
+        const char *type;
+        switch (event.type) {
+          case NSLeftMouseDown:
+          case NSRightMouseDown:
+            type = "down";
+            break;
+          case NSLeftMouseUp:
+          case NSRightMouseUp:
+            type = "up";
+            break;
+          default:
+            type = "move";
+            break;
+        }
+
+        CGPoint windowPos = event.locationInWindow;
+        CGPoint localPos = [self.contentView convertPoint: windowPos fromView: nil];
+
+        std::cout << "mouse event at (" << localPos.x << "," << localPos.y << ") pressure " << event.pressure << std::endl;
+
+        emitTabletEvent(
+          Nan::New(emitCallbacks[self]), type,
+          false, false, false, false, // TODO
+          localPos.x, localPos.y,
+          event.pressure,
+          0, 0,
+          pointerTypeString(event.pointingDeviceType),
+          event.uniqueID
+        );
+
+        break;
       }
-
-      CGPoint pos = event.locationInWindow;
-
-      std::cout << "mouse event at (" << pos.x << "," << pos.y << ") pressure" << event.pressure << std::endl;
-
-      makeEventCallback(
-        self, type,
-        false, false, false, false, // TODO
-        pos.x, pos.y, // TODO: fix coords
-        event.pressure,
-        0, 0,
-        event.deviceID
-      );
-
-      break;
+      default:
+        break;
     }
-    default:
-      break;
   }
-
-  /*
-  if (callbacks.find(self) != callbacks.end()) {
-    v8::Local<v8::Function> func = Nan::New(callbacks[self]);
-    v8::Local<v8::Object> eventObj = Nan::New<v8::Object>();
-    eventObj->Set(Nan::New("timestamp").ToLocalChecked(), Nan::New(event.timestamp));
-    v8::Local<v8::Value> argv[] = { eventObj };
-    Nan::MakeCallback(Nan::GetCurrentContext()->Global(), func, sizeof(argv), argv);
-  }
-  */
 
   [self sendEventIntercept:event];
 }
@@ -155,7 +168,7 @@ void intercept(const Nan::FunctionCallbackInfo<v8::Value> &info) {
 
   v8::Local<v8::Function> cb = info[1].As<v8::Function>();
 
-  callbacks[window] = FunctionPersistent(cb);
+  emitCallbacks[window] = FunctionPersistent(cb);
 
   info.GetReturnValue().Set(Nan::Undefined());
 }
