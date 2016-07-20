@@ -8,8 +8,6 @@ export interface TabletEvent {
   ctrlKey: boolean;
   metaKey: boolean;
   shiftKey: boolean;
-  button: number;
-  buttons: number;
   clientX: number;
   clientY: number;
   screenX: number;
