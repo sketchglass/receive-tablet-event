@@ -2,7 +2,7 @@
 
 Receive native digitizer (tablet) event in Node.js (mainly for Electron)
 
-## Supported platform
+## Supported platforms
 
 - [x] Mac
 - [ ] Windows
@@ -46,4 +46,12 @@ receiver.on("up", (ev) => {
   console.log("end drawing");
   console.log(ev.pointerId, ev.clientX, ev.clientY, ev.pressure);
 });
+```
+
+## Run example
+
+```
+cd example
+npm install
+npm start
 ```
