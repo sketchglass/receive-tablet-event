@@ -20,7 +20,7 @@ void emitProximityEvent(
   event->Set(Nan::New("pointerId").ToLocalChecked(), Nan::New(pointerId));
 
   v8::Local<v8::Value> argv[] = { Nan::New(type).ToLocalChecked(), event };
-  Nan::MakeCallback(Nan::GetCurrentContext()->Global(), func, sizeof(argv), argv);
+  func->Call(Nan::GetCurrentContext()->Global(), 2, argv);
 }
 
 void emitTabletEvent(
@@ -57,7 +57,7 @@ void emitTabletEvent(
   event->Set(Nan::New("pointerId").ToLocalChecked(), Nan::New(pointerId));
 
   v8::Local<v8::Value> argv[] = { Nan::New(type).ToLocalChecked(), event };
-  Nan::MakeCallback(Nan::GetCurrentContext()->Global(), func, sizeof(argv), argv);
+  func->Call(Nan::GetCurrentContext()->Global(), 2, argv);
 }
 
 const char *pointerTypeString(NSPointingDeviceType type) {
