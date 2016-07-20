@@ -1,5 +1,5 @@
 {
-  "name": "intercept-tablet-event",
+  "name": "receive-tablet-event",
   "version": "0.1.0",
   "main": "index.js",
   "typings": "index.d.ts",
@@ -22,11 +22,11 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/seanchas116/intercept-tablet-event.git"
+    "url": "git+https://github.com/seanchas116/receive-tablet-event.git"
   },
   "bugs": {
-    "url": "https://github.com/seanchas116/intercept-tablet-event/issues"
+    "url": "https://github.com/seanchas116/receive-tablet-event/issues"
   },
-  "homepage": "https://github.com/seanchas116/intercept-tablet-event#readme",
+  "homepage": "https://github.com/seanchas116/receive-tablet-event#readme",
   "description": ""
 }

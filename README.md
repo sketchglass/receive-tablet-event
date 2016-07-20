@@ -1,10 +1,6 @@
-# intercept-tablet-event
+# receive-tablet-event
 
-Intercept native tablet (digitizer) event in JavaScript in Electron
-
-## Features
-
-* Receive tablet proximity / up / down / move events for Electron windows from JavaScript
+Receive native digitizer (tablet) event in Node.js (mainly for Electron)
 
 ## Supported platform
 
@@ -15,14 +11,14 @@ Intercept native tablet (digitizer) event in JavaScript in Electron
 ## Usage
 
 ```
-npm install --save seanchas116/intercept-tablet-event
+npm install --save seanchas116/receive-tablet-event
 npm install --save-dev electron-rebuild
 $(npm bin)/electron-rebuild -f
 ```
 
 ```js
-// intercept-tablet-event only supports main process
-const {TabletEventReceiver} = require("intercept-tablet-event");
+// receive-tablet-event only supports main process
+const {TabletEventReceiver} = require("receive-tablet-event");
 
 const win = new BrowserWindow({width: 800, height: 600});
 
