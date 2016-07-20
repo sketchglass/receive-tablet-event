@@ -2,7 +2,7 @@ import {EventEmitter} from "events";
 
 type TabletEventTypes = "enterProximity" | "leaveProximity" | "down" | "up" | "move";
 
-interface TabletEvent {
+export interface TabletEvent {
   type: TabletEventTypes;
   altKey: boolean;
   ctrlKey: boolean;
@@ -20,9 +20,7 @@ interface TabletEvent {
   pointerId: number;
 }
 
-declare class InterceptTabletEvent extends EventEmitter {
+export declare class TabletEventReceiver extends EventEmitter {
   constructor(window: Buffer);
   on(name: "event", callback: (event: TabletEvent) => void);
 }
-
-export = InterceptTabletEvent;
