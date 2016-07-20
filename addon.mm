@@ -123,7 +123,7 @@ const char *pointerTypeString(NSPointingDeviceType type) {
         emitTabletEvent(
           Nan::New(emitCallbacks[self]), type,
           false, false, false, false, // TODO
-          localPos.x, localPos.y,
+          localPos.x, self.contentView.bounds.size.height - localPos.y,
           event.pressure,
           0, 0,
           pointerTypeString(event.pointingDeviceType),
