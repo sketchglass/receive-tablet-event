@@ -87,7 +87,7 @@ const char *pointerTypeString(NSPointingDeviceType type) {
         } else {
           type = "leaveProximity";
         }
-        std::cout << "tablet proximity" << std::endl;
+        //std::cout << "tablet proximity" << std::endl;
         emitProximityEvent(Nan::New(emitCallbacks[self]), type, pointerTypeString(event.pointingDeviceType), event.uniqueID);
         break;
       }
@@ -118,7 +118,7 @@ const char *pointerTypeString(NSPointingDeviceType type) {
         CGPoint windowPos = event.locationInWindow;
         CGPoint localPos = [self.contentView convertPoint: windowPos fromView: nil];
 
-        std::cout << "mouse event at (" << localPos.x << "," << localPos.y << ") pressure " << event.pressure << std::endl;
+        //std::cout << "mouse event at (" << localPos.x << "," << localPos.y << ") pressure " << event.pressure << std::endl;
 
         emitTabletEvent(
           Nan::New(emitCallbacks[self]), type,
@@ -167,7 +167,7 @@ void intercept(const Nan::FunctionCallbackInfo<v8::Value> &info) {
   NSView *view = *reinterpret_cast<NSView **>(buf);
   NSWindow *window = view.window;
 
-  std::cout << window << std::endl;
+  //std::cout << window << std::endl;
 
   v8::Local<v8::Function> cb = info[1].As<v8::Function>();
 
