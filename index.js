@@ -7,6 +7,10 @@ class TabletEventReceiver extends EventEmitter {
     this.windowHandle = windowHandle;
     addon.intercept(windowHandle, this.emit.bind(this));
   }
+
+  dispose() {
+    addon.unintercept(this.windowHandle);
+  }
 }
 
 exports.TabletEventReceiver = TabletEventReceiver;

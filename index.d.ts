@@ -30,4 +30,5 @@ export declare class TabletEventReceiver extends EventEmitter {
   on(name: "down", callback: (event: TabletEvent) => void);
   on(name: "up", callback: (event: TabletEvent) => void);
   on(name: "move", callback: (event: TabletEvent) => void);
+  dispose(): void;
 }

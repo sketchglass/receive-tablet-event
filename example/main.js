@@ -36,6 +36,7 @@ function createWindow() {
   win.webContents.openDevTools();
 
   win.on('closed', () => {
+    receiver.dispose();
     win = null;
   });
 }

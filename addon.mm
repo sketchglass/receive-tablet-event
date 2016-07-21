@@ -176,11 +176,29 @@ void intercept(const Nan::FunctionCallbackInfo<v8::Value> &info) {
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
+void unintercept(const Nan::FunctionCallbackInfo<v8::Value> &info) {
+  if (info.Length() != 1) {
+    Nan::ThrowTypeError("Wrong number of arguments");
+    return;
+  }
+
+  char *buf = node::Buffer::Data(info[0]);
+  NSView *view = *reinterpret_cast<NSView **>(buf);
+  NSWindow *window = view.window;
+
+  emitCallbacks.erase(window);
+
+  info.GetReturnValue().Set(Nan::Undefined());
+}
+
+
 void init(v8::Local<v8::Object> exports) {
   [NSWindow switchSendEvent];
 
   exports->Set(Nan::New("intercept").ToLocalChecked(),
                Nan::New<v8::FunctionTemplate>(intercept)->GetFunction());
+  exports->Set(Nan::New("unintercept").ToLocalChecked(),
+               Nan::New<v8::FunctionTemplate>(unintercept)->GetFunction());
 }
 
 NODE_MODULE(receive_tablet_event, init)
