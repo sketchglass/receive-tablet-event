@@ -17,8 +17,9 @@ export interface TabletEvent {
   screenX: number;
   screenY: number;
   pressure: number;
-  tiltX: number;
-  tiltY: number;
+  // TODO
+  // tiltX: number;
+  // tiltY: number;
   pointerType: PointerTypes;
   pointerId: number;
 }

@@ -33,8 +33,6 @@ void emitTabletEvent(
   double clientX,
   double clientY,
   double pressure,
-  double tiltX,
-  double tiltY,
   const char *pointerType,
   int pointerId
 ) {
@@ -49,9 +47,6 @@ void emitTabletEvent(
   event->Set(Nan::New("clientY").ToLocalChecked(), Nan::New(clientY));
 
   event->Set(Nan::New("pressure").ToLocalChecked(), Nan::New(pressure));
-
-  event->Set(Nan::New("tiltX").ToLocalChecked(), Nan::New(tiltX));
-  event->Set(Nan::New("tiltY").ToLocalChecked(), Nan::New(tiltY));
 
   event->Set(Nan::New("pointerType").ToLocalChecked(), Nan::New(pointerType).ToLocalChecked());
   event->Set(Nan::New("pointerId").ToLocalChecked(), Nan::New(pointerId));
@@ -128,7 +123,6 @@ const char *pointerTypeString(NSPointingDeviceType type) {
           event.modifierFlags & NSShiftKeyMask,
           localPos.x, self.contentView.bounds.size.height - localPos.y,
           event.pressure,
-          0, 0,
           pointerTypeString(event.pointingDeviceType),
           event.uniqueID
         );
