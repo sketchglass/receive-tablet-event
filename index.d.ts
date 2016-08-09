@@ -26,10 +26,10 @@ export interface TabletEvent {
 
 export declare class TabletEventReceiver extends EventEmitter {
   constructor(windowHandle: Buffer);
-  on(name: "enterProximity", callback: (event: ProximityEvent) => void): void;
-  on(name: "leaveProximity", callback: (event: ProximityEvent) => void): void;
-  on(name: "down", callback: (event: TabletEvent) => void): void;
-  on(name: "up", callback: (event: TabletEvent) => void): void;
-  on(name: "move", callback: (event: TabletEvent) => void): void;
+  on(name: "enterProximity", callback: (event: ProximityEvent) => void): this;
+  on(name: "leaveProximity", callback: (event: ProximityEvent) => void): this;
+  on(name: "down", callback: (event: TabletEvent) => void): this;
+  on(name: "up", callback: (event: TabletEvent) => void): this;
+  on(name: "move", callback: (event: TabletEvent) => void): this;
   dispose(): void;
 }
