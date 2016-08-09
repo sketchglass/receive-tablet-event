@@ -4,7 +4,7 @@
 #import <Cocoa/Cocoa.h>
 #import <objc/runtime.h>
 
-std::map<NSWindow *, FunctionPersistent> emitCallbacks;
+std::map<NSWindow *, void *> handles;
 
 const char *pointerTypeString(NSPointingDeviceType type) {
   switch (type) {
@@ -23,7 +23,7 @@ const char *pointerTypeString(NSPointingDeviceType type) {
 
 -(void)sendEventIntercept:(NSEvent *)event
 {
-  if (emitCallbacks.find(self) != emitCallbacks.end()) {
+  if (handles.find(self) != handles.end()) {
 
     switch (event.type) {
       case NSTabletProximity: {
@@ -34,7 +34,7 @@ const char *pointerTypeString(NSPointingDeviceType type) {
           type = "leaveProximity";
         }
         //std::cout << "tablet proximity" << std::endl;
-        EmitProximityEvent(emitCallbacks[self], type, pointerTypeString(event.pointingDeviceType), event.uniqueID);
+        EmitProximityEvent(handles[self], type, pointerTypeString(event.pointingDeviceType), event.uniqueID);
         break;
       }
       case NSLeftMouseDown:
@@ -67,7 +67,7 @@ const char *pointerTypeString(NSPointingDeviceType type) {
         //std::cout << "mouse event at (" << localPos.x << "," << localPos.y << ") pressure " << event.pressure << std::endl;
 
         EmitTabletEvent(
-          emitCallbacks[self], type,
+          handles[self], type,
           event.modifierFlags & NSAlternateKeyMask,
           event.modifierFlags & NSControlKeyMask,
           event.modifierFlags & NSCommandKeyMask,
@@ -102,18 +102,18 @@ const char *pointerTypeString(NSPointingDeviceType type) {
 
 @end
 
-void InterceptWindow(void *handle, const FunctionPersistent &callback) {
+void InterceptWindow(void *handle) {
   NSView *view = reinterpret_cast<NSView *>(handle);
   NSWindow *window = view.window;
 
-  emitCallbacks[window] = callback;
+  handles[window] = handle;
 }
 
 void UninterceptWindow(void *handle) {
   NSView *view = reinterpret_cast<NSView *>(handle);
   NSWindow *window = view.window;
 
-  emitCallbacks.erase(window);
+  handles.erase(window);
 }
 
 void Init() {

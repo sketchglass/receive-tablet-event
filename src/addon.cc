@@ -1,9 +1,14 @@
 #include <nan.h>
 #include <iostream>
+#include <map>
 #include "addon.h"
 
+typedef Nan::Persistent<v8::Function, v8::CopyablePersistentTraits<v8::Function> > FunctionPersistent;
+
+std::map<void *, FunctionPersistent> emitCallbacks;
+
 void EmitProximityEvent(
-  const FunctionPersistent &func,
+  void *handle,
   const char *type,
   const char *pointerType,
   int pointerId
@@ -14,11 +19,11 @@ void EmitProximityEvent(
   event->Set(Nan::New("pointerId").ToLocalChecked(), Nan::New(pointerId));
 
   v8::Local<v8::Value> argv[] = { Nan::New(type).ToLocalChecked(), event };
-  Nan::New(func)->Call(Nan::GetCurrentContext()->Global(), 2, argv);
+  Nan::New(emitCallbacks[handle])->Call(Nan::GetCurrentContext()->Global(), 2, argv);
 }
 
 void EmitTabletEvent(
-  const FunctionPersistent &func,
+  void *handle,
   const char *type,
   bool altKey,
   bool ctrlKey,
@@ -46,7 +51,7 @@ void EmitTabletEvent(
   event->Set(Nan::New("pointerId").ToLocalChecked(), Nan::New(pointerId));
 
   v8::Local<v8::Value> argv[] = { Nan::New(type).ToLocalChecked(), event };
-  Nan::New(func)->Call(Nan::GetCurrentContext()->Global(), 2, argv);
+  Nan::New(emitCallbacks[handle])->Call(Nan::GetCurrentContext()->Global(), 2, argv);
 }
 
 void intercept(const Nan::FunctionCallbackInfo<v8::Value> &info) {
@@ -58,7 +63,8 @@ void intercept(const Nan::FunctionCallbackInfo<v8::Value> &info) {
   char *buf = node::Buffer::Data(info[0]);
   void *handle = *reinterpret_cast<void **>(buf);
   v8::Local<v8::Function> cb = info[1].As<v8::Function>();
-  InterceptWindow(handle, FunctionPersistent(cb));
+  emitCallbacks[handle] = FunctionPersistent(cb);
+  InterceptWindow(handle);
 
   info.GetReturnValue().Set(Nan::Undefined());
 }
@@ -72,6 +78,7 @@ void unintercept(const Nan::FunctionCallbackInfo<v8::Value> &info) {
   char *buf = node::Buffer::Data(info[0]);
   void *handle = *reinterpret_cast<void **>(buf);
   UninterceptWindow(handle);
+  emitCallbacks.erase(handle);
 
   info.GetReturnValue().Set(Nan::Undefined());
 }

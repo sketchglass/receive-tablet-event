@@ -1,16 +1,13 @@
-#include <nan.h>
-
-typedef Nan::Persistent<v8::Function, v8::CopyablePersistentTraits<v8::Function> > FunctionPersistent;
 
 void EmitProximityEvent(
-  const FunctionPersistent &func,
+  void *handle,
   const char *type,
   const char *pointerType,
   int pointerId
 );
 
 void EmitTabletEvent(
-  const FunctionPersistent &func,
+  void *handle,
   const char *type,
   bool altKey,
   bool ctrlKey,
@@ -23,6 +20,6 @@ void EmitTabletEvent(
   int pointerId
 );
 
-void InterceptWindow(void *handle, const FunctionPersistent &callback);
+void InterceptWindow(void *handle);
 void UninterceptWindow(void *handle);
 void Init();

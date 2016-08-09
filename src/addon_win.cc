@@ -1,13 +1,12 @@
 #include "addon.h"
 #include <iostream>
-#include <Commctrl.h>
-#pragma comment(lib, "comctl32.lib")
+#include <Windows.h>
 
 LRESULT CALLBACK hookMessage(int code, WPARAM wParam, LPARAM lParam) {
   return 0;
 }
 
-void InterceptWindow(void *handle, const FunctionPersistent &callback) {
+void InterceptWindow(void *handle) {
   HWND hWnd = (HWND)handle;
 }
 void UninterceptWindow(void *handle) {
