@@ -1,18 +1,26 @@
 #include "addon.h"
 #include <iostream>
+#include <assert.h>
 #include <Windows.h>
 #include <ole2.h>
 #include <rtscom.h>
 #include <rtscom_i.c>
-#include <assert.h>
+#include <comdef.h>
 
 class EventHandler : public IStylusSyncPlugin
 {
 	HWND m_hWnd;
-	LONG m_cRefCount;
+	LONG m_cRefCount = 1;
+	IUnknown* m_punkFTMarshaller = nullptr;
 public:
-	EventHandler(HWND hWnd) : m_hWnd(hWnd), m_cRefCount(1)
+	EventHandler(HWND hWnd) : m_hWnd(hWnd)
 	{
+		auto hr = CoCreateFreeThreadedMarshaler(this, &m_punkFTMarshaller);
+		assert(SUCCEEDED(hr));
+	}
+	~EventHandler()
+	{
+		m_punkFTMarshaller->Release();
 	}
 
 	STDMETHOD(StylusDown)(IRealTimeStylus* piSrcRtp, const StylusInfo* pStylusInfo, ULONG cPropCountPerPkt, LONG* pPacket, LONG** ppInOutPkt)
@@ -76,6 +84,10 @@ public:
 			AddRef();
 			return S_OK;
 		}
+		else if (riid == IID_IMarshal)
+		{
+			return m_punkFTMarshaller->QueryInterface(riid, ppvObj);
+		}
 		*ppvObj = NULL;
 		return E_NOINTERFACE;
 	}
@@ -99,6 +111,10 @@ void InterceptWindow(void *handle)
 	auto realTimeStylus = CreateRealtimeStylus(hWnd);
 	auto handler = new EventHandler(hWnd);
 	auto hr = realTimeStylus->AddStylusSyncPlugin(0, handler);
+	assert(SUCCEEDED(hr));
+	hr = realTimeStylus->put_Enabled(TRUE);
+	std::cout << _com_error(hr).ErrorMessage() << std::endl;
+	std::cout << std::hex << hr << std::endl;
 	assert(SUCCEEDED(hr));
 }
 
