@@ -82,7 +82,6 @@ void InterceptWindow(void *handle)
 {
 	auto hwnd = (HWND)handle;
 	auto child = FindWindowEx(hwnd, NULL, TEXT("Chrome_RenderWidgetHostHWND"), NULL);
-	std::cout << child << std::endl;
 	SetWindowSubclass(child, handleSubclassMessage, 0, (DWORD_PTR)hwnd);
 }
 
