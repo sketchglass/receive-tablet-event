@@ -14,7 +14,9 @@ LRESULT CALLBACK handleSubclassMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 void InterceptWindow(void *handle)
 {
 	auto hwnd = (HWND)handle;
-	SetWindowSubclass(hwnd, handleSubclassMessage, 0, 0);
+	auto child = FindWindowEx(hwnd, NULL, TEXT("Chrome_RenderWidgetHostHWND"), NULL);
+	std::cout << child << std::endl;
+	SetWindowSubclass(child, handleSubclassMessage, 0, 0);
 }
 
 void UninterceptWindow(void *handle)
