@@ -9,7 +9,7 @@ function createWindow() {
   win = new BrowserWindow({width: 800, height: 600});
 
   win.webContents.once("did-finish-load", () => {
-    receiver = new TabletEventReceiver(win.getNativeWindowHandle());
+    receiver = new TabletEventReceiver(win);
     receiver.on("enterProximity", (ev) => {
       console.log("enterProximity");
       console.log(ev);

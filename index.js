@@ -2,10 +2,10 @@ const {EventEmitter} = require('events');
 const addon = require('bindings')('addon.node');
 
 class TabletEventReceiver extends EventEmitter {
-  constructor(windowHandle) {
+  constructor(browserWindow) {
     super();
-    this.windowHandle = windowHandle;
-    addon.intercept(windowHandle, this.emit.bind(this));
+    this.windowHandle = browserWindow.getNativeWindowHandle();
+    addon.intercept(this.windowHandle, this.emit.bind(this));
   }
 
   dispose() {

@@ -1,4 +1,5 @@
 import {EventEmitter} from "events";
+import Electron = require("electron");
 
 type PointerTypes = "eraser" | "pen" | "cursor" | "unknown";
 
@@ -25,7 +26,7 @@ export interface TabletEvent {
 }
 
 export declare class TabletEventReceiver extends EventEmitter {
-  constructor(windowHandle: Buffer);
+  constructor(window: Electron.BrowserWindow);
   on(name: "enterProximity", callback: (event: ProximityEvent) => void): this;
   on(name: "leaveProximity", callback: (event: ProximityEvent) => void): this;
   on(name: "down", callback: (event: TabletEvent) => void): this;
