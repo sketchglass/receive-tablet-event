@@ -64,7 +64,12 @@ LRESULT CALLBACK handleSubclassMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 		else {
 			penType = "pen";
 		}
-		EmitTabletEvent(root, eventType, false, false, false, false, x, y, pointerPenInfo.pressure, penType, pointerInfo.pointerId);
+		EmitTabletEvent(
+			root, eventType,
+			false, false, false, false,
+			x, y, pointerPenInfo.pressure / 1024.0,
+			penType, pointerInfo.pointerId
+		);
 		return 0;
 	}
 	default:
