@@ -56,6 +56,10 @@ LRESULT CALLBACK handleSubclassMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 		double himetricToPx = widthPx / (widthMm * 100.0);
 		double x = pointerInfo.ptHimetricLocationRaw.x * himetricToPx;
 		double y = pointerInfo.ptHimetricLocationRaw.y * himetricToPx;
+		double dpiScale = GetDeviceCaps(hdc, LOGPIXELSX) / 96.0;
+
+		POINT origin { 0, 0 };
+		MapWindowPoints(hwnd, NULL, &origin, 1);
 
 		const char *penType;
 		if (pointerPenInfo.penFlags & PEN_FLAG_ERASER) {
@@ -66,7 +70,8 @@ LRESULT CALLBACK handleSubclassMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 		}
 		EmitTabletEvent(
 			root, eventType,
-			x, y, pointerPenInfo.pressure / 1024.0,
+			(x - origin.x) / dpiScale, (y - origin.y) / dpiScale,
+			pointerPenInfo.pressure / 1024.0,
 			penType, pointerInfo.pointerId
 		);
 		return 0;
