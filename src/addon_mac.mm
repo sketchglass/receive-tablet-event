@@ -68,10 +68,6 @@ const char *pointerTypeString(NSPointingDeviceType type) {
 
         EmitTabletEvent(
           handles[self], type,
-          event.modifierFlags & NSAlternateKeyMask,
-          event.modifierFlags & NSControlKeyMask,
-          event.modifierFlags & NSCommandKeyMask,
-          event.modifierFlags & NSShiftKeyMask,
           localPos.x, self.contentView.bounds.size.height - localPos.y,
           event.pressure,
           pointerTypeString(event.pointingDeviceType),

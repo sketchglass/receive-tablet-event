@@ -9,10 +9,6 @@ export interface ProximityEvent {
 }
 
 export interface TabletEvent {
-  altKey: boolean;
-  ctrlKey: boolean;
-  metaKey: boolean;
-  shiftKey: boolean;
   clientX: number;
   clientY: number;
   screenX: number;

@@ -9,10 +9,6 @@ void EmitProximityEvent(
 void EmitTabletEvent(
   void *handle,
   const char *type,
-  bool altKey,
-  bool ctrlKey,
-  bool metaKey,
-  bool shiftKey,
   double clientX,
   double clientY,
   double pressure,

@@ -25,10 +25,6 @@ void EmitProximityEvent(
 void EmitTabletEvent(
   void *handle,
   const char *type,
-  bool altKey,
-  bool ctrlKey,
-  bool metaKey,
-  bool shiftKey,
   double clientX,
   double clientY,
   double pressure,
@@ -36,11 +32,6 @@ void EmitTabletEvent(
   int pointerId
 ) {
   v8::Local<v8::Object> event = Nan::New<v8::Object>();
-
-  event->Set(Nan::New("altKey").ToLocalChecked(), Nan::New(altKey));
-  event->Set(Nan::New("ctrlKey").ToLocalChecked(), Nan::New(ctrlKey));
-  event->Set(Nan::New("metaKey").ToLocalChecked(), Nan::New(metaKey));
-  event->Set(Nan::New("shiftKey").ToLocalChecked(), Nan::New(shiftKey));
 
   event->Set(Nan::New("clientX").ToLocalChecked(), Nan::New(clientX));
   event->Set(Nan::New("clientY").ToLocalChecked(), Nan::New(clientY));

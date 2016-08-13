@@ -66,7 +66,6 @@ LRESULT CALLBACK handleSubclassMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 		}
 		EmitTabletEvent(
 			root, eventType,
-			false, false, false, false,
 			x, y, pointerPenInfo.pressure / 1024.0,
 			penType, pointerInfo.pointerId
 		);
