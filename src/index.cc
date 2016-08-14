@@ -72,6 +72,29 @@ static void Intercept(const Nan::FunctionCallbackInfo<v8::Value> &info)
     info.GetReturnValue().Set(Nan::Undefined());
 }
 
+static void SetTargetRectangle(const Nan::FunctionCallbackInfo<v8::Value> &info)
+{
+    if (info.Length() != 5)
+    {
+        Nan::ThrowTypeError("Wrong number of arguments");
+        return;
+    }
+    char *buf = node::Buffer::Data(info[0]);
+    void *handle = *reinterpret_cast<void **>(buf);
+
+    auto left = info[1]->NumberValue();
+    auto top = info[2]->NumberValue();
+    auto width = info[3]->NumberValue();
+    auto height = info[4]->NumberValue();
+
+    if (eventReceivers.find(handle) != eventReceivers.end()) {
+        Rectangle rect { left, top, width, height };
+        eventReceivers[handle]->SetTargetRectangle(rect);
+    }
+
+    info.GetReturnValue().Set(Nan::Undefined());
+}
+
 static void Unintercept(const Nan::FunctionCallbackInfo<v8::Value> &info)
 {
     if (info.Length() != 1)
@@ -90,10 +113,18 @@ static void Unintercept(const Nan::FunctionCallbackInfo<v8::Value> &info)
 static void InitModule(v8::Local<v8::Object> exports) {
     InitEventReceiver();
 
-    exports->Set(Nan::New("intercept").ToLocalChecked(),
-    Nan::New<v8::FunctionTemplate>(Intercept)->GetFunction());
-    exports->Set(Nan::New("unintercept").ToLocalChecked(),
-    Nan::New<v8::FunctionTemplate>(Unintercept)->GetFunction());
+    exports->Set(
+        Nan::New("intercept").ToLocalChecked(),
+        Nan::New<v8::FunctionTemplate>(Intercept)->GetFunction()
+    );
+    exports->Set(
+        Nan::New("setTargetRectangle").ToLocalChecked(),
+        Nan::New<v8::FunctionTemplate>(SetTargetRectangle)->GetFunction()
+    );
+    exports->Set(
+        Nan::New("unintercept").ToLocalChecked(),
+        Nan::New<v8::FunctionTemplate>(Unintercept)->GetFunction()
+    );
 }
 
 NODE_MODULE(receive_tablet_event, InitModule)
