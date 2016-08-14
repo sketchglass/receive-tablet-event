@@ -60,16 +60,19 @@ public:
 				break;
 			}
 
-			HDC hdc = GetDC(pointerInfo.hwndTarget);
-			double widthPx = GetDeviceCaps(hdc, HORZRES);
-			double widthMm = GetDeviceCaps(hdc, HORZSIZE);
-			double himetricToPx = widthPx / (widthMm * 100.0);
-			double x = pointerInfo.ptHimetricLocationRaw.x * himetricToPx;
-			double y = pointerInfo.ptHimetricLocationRaw.y * himetricToPx;
-			double dpiScale = GetDeviceCaps(hdc, LOGPIXELSX) / 96.0;
+			RECT himetricRect, displayRect;
+			GetPointerDeviceRects(pointerInfo.sourceDevice, &himetricRect, &displayRect);
+
+			double deviceX = ((double)pointerInfo.ptHimetricLocation.x - himetricRect.left) / (himetricRect.right - himetricRect.left);
+			double deviceY = ((double)pointerInfo.ptHimetricLocation.y - himetricRect.top) / (himetricRect.bottom - himetricRect.top);
+			double globalX = displayRect.left + deviceX * (displayRect.right - displayRect.left);
+			double globalY = displayRect.top + deviceY * (displayRect.bottom - displayRect.top);
 
 			POINT origin{ 0, 0 };
 			MapWindowPoints(pointerInfo.hwndTarget, NULL, &origin, 1);
+	
+			double localX = globalX - origin.x;
+			double localY = globalY - origin.y;
 
 			const char *penType;
 			if (pointerPenInfo.penFlags & PEN_FLAG_ERASER) {
@@ -77,9 +80,13 @@ public:
 			} else {
 				penType = "pen";
 			}
+
+			HDC hdc = GetDC(pointerInfo.hwndTarget);
+			double dpiScale = GetDeviceCaps(hdc, LOGPIXELSX) / 96.0;
+
 			Delegate()->OnTabletEvent(
 				eventType,
-				(x - origin.x) / dpiScale, (y - origin.y) / dpiScale,
+				localX / dpiScale, localY / dpiScale,
 				pointerPenInfo.pressure / 1024.0,
 				penType, pointerInfo.pointerId
 			);
