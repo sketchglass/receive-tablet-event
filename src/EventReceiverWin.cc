@@ -22,7 +22,7 @@ public:
 
 	~EventReceiverWin()
 	{
-
+		RemoveWindowSubclass(m_hwnd, handleSubclassMessage, 0);
 	}
 
 	bool HandleMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT *result)
