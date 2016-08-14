@@ -2,7 +2,7 @@
   "targets": [
     {
       "target_name": "addon",
-      "sources": [ "src/index.cc" ],
+      "sources": [ "src/index.cc", "src/EventReceiver.cc" ],
       "include_dirs": [
         "<!(node -e \"require('nan')\")",
       ],

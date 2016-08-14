@@ -12,6 +12,21 @@ public:
         return m_delegate;
     }
 
+protected:
+    bool HandleProximityEvent(
+        const char *type,
+        const char *pointerType,
+        int pointerId
+    );
+    bool HandleTabletEvent(
+        const char *type,
+        double clientX,
+        double clientY,
+        double pressure,
+        const char *pointerType,
+        int pointerId
+    );
+
 private:
     std::unique_ptr<EventDelegate> m_delegate;
 };
