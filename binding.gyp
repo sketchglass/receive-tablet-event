@@ -2,16 +2,22 @@
   "targets": [
     {
       "target_name": "addon",
-      "sources": [ "src/addon.cc" ],
+      "sources": [ "src/index.cc" ],
       "include_dirs": [
-        "<!(node -e \"require('nan')\")"
+        "<!(node -e \"require('nan')\")",
       ],
       "conditions": [
         ['OS=="mac"', {
-          "sources": [ "src/addon_mac.mm" ]
+          'xcode_settings': {
+            'OTHER_CFLAGS': [
+              '-std=c++11',
+              '-stdlib=libc++'
+            ]
+          },
+          "sources": [ "src/EventReceiverMac.mm" ]
         }],
         ['OS=="win"', {
-          "sources": [ "src/addon_win.cc" ]
+          "sources": [ "src/EventReceiverWin.cc" ]
         }]
       ]
     }
