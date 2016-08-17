@@ -14,8 +14,13 @@ function createWindow() {
     win = null;
   });
 
+  let receiver;
+
   ipcMain.on("tablet:install", (ev, captureArea) => {
-    const receiver = new TabletEventReceiver(win);
+    if (receiver) {
+      return;
+    }
+    receiver = new TabletEventReceiver(win);
     receiver.captureArea = captureArea;
     const eventNames = ["enterProximity", "leaveProximity", "down", "move", "up"];
     for (const name of eventNames) {
