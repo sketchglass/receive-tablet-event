@@ -3,23 +3,7 @@
 const {EventEmitter} = require('events');
 const addon = require('bindings')('addon.node');
 
-const receivers = new Map();
-
 class TabletEventReceiver extends EventEmitter {
-  static install(browserWindow) {
-    if (receivers.has(browserWindow)) {
-      return receivers.get(browserWindow);
-    } else {
-      const receiver = new TabletEventReceiver(browserWindow);
-      receivers.set(browserWindow, receiver);
-      browserWindow.on('closed', () => {
-        receivers.delete(browserWindow);
-        receiver.dispose();
-      });
-      return receiver;
-    }
-  }
-
   constructor(browserWindow) {
     super();
     this.captureArea = {left: 0, top: 0, width: 0, height: 0};
@@ -63,6 +47,4 @@ class TabletEventReceiver extends EventEmitter {
   }
 }
 
-module.exports = function receiveTabletEvent(browserWindow) {
-  return TabletEventReceiver.install(browserWindow);
-};
+exports.TabletEventReceiver = TabletEventReceiver;

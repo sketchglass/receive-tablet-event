@@ -1,11 +1,8 @@
 "use strict";
 
-const {remote} = require("electron");
-const receiveTabletEvent = remote.require("receive-tablet-event");
+const {ipcRenderer} = require("electron");
 
 document.addEventListener("DOMContentLoaded", () => {
-  const receiver = receiveTabletEvent(remote.getCurrentWindow());
-
   let pressed = false;
   let x = 0;
   let y = 0;
@@ -18,46 +15,32 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const rect = document.getElementById("capture-area").getBoundingClientRect();
-  receiver.captureArea = {
+  const captureArea = {
     left: Math.round(rect.left),
     top: Math.round(rect.top),
     width: Math.round(rect.width),
     height: Math.round(rect.height),
   }
+  ipcRenderer.send("tablet:install", captureArea);
 
-  receiver.on("enterProximity", (ev) => {
-    console.log("enterProximity");
-    console.log(ev);
-  });
-  receiver.on("leaveProximity", (ev) => {
-    console.log("leaveProximity");
-    console.log(ev);
-  });
-  receiver.on("down", (ev) => {
-    console.log("down");
-    console.log(ev);
+  ipcRenderer.on("tablet:down", (ev, arg) => {
     pressed = true;
-    x = ev.clientX;
-    y = ev.clientY;
-    pressure = ev.pressure;
+    x = arg.clientX;
+    y = arg.clientY;
+    pressure = arg.pressure;
     updateInfo();
   });
-  receiver.on("move", (ev) => {
-    console.log("move")
-    console.log(ev);
-    x = ev.clientX;
-    y = ev.clientY;
-    pressure = ev.pressure;
+  ipcRenderer.on("tablet:move", (ev, arg) => {
+    x = arg.clientX;
+    y = arg.clientY;
+    pressure = arg.pressure;
     updateInfo();
   });
-  receiver.on("up", (ev) => {
-    console.log("up");
-    console.log(ev);
+  ipcRenderer.on("tablet:up", (ev, arg) => {
     pressed = false;
-    x = ev.clientX;
-    y = ev.clientY;
-    pressure = ev.pressure;
+    x = arg.clientX;
+    y = arg.clientY;
+    pressure = arg.pressure;
     updateInfo();
   });
-
 });
