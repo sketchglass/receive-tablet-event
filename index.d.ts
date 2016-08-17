@@ -6,8 +6,6 @@ type PointerTypes = "eraser" | "pen" | "cursor" | "unknown";
 export interface TabletEvent {
   clientX: number;
   clientY: number;
-  screenX: number;
-  screenY: number;
   pressure: number;
   // TODO
   // tiltX: number;
