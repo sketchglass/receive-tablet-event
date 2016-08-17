@@ -16,13 +16,17 @@ public:
 		EventReceiver(std::move(delegate)),
 		m_hwnd(hwnd)
 	{
-		auto child = FindWindowEx(hwnd, NULL, TEXT("Chrome_RenderWidgetHostHWND"), NULL);
-		SetWindowSubclass(child, handleSubclassMessage, 0, (DWORD_PTR)this);
 	}
 
 	~EventReceiverWin()
 	{
 		RemoveWindowSubclass(m_hwnd, handleSubclassMessage, 0);
+	}
+
+	void OnReload() override
+	{
+		auto child = FindWindowEx(m_hwnd, NULL, TEXT("Chrome_RenderWidgetHostHWND"), NULL);
+		SetWindowSubclass(child, handleSubclassMessage, 0, (DWORD_PTR)this);
 	}
 
 	bool HandleMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT *result)

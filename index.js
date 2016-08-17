@@ -10,6 +10,9 @@ class TabletEventReceiver extends EventEmitter {
     this.capturedPointers = new Set();
     this.windowHandle = browserWindow.getNativeWindowHandle();
     addon.intercept(this.windowHandle, this.handleEvent.bind(this));
+    browserWindow.webContents.on("dom-ready", () => {
+      addon.onReload(this.windowHandle);
+    });
   }
 
   insideCaptureArea(clientX, clientY) {

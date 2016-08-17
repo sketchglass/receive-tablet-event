@@ -7,6 +7,8 @@ public:
     EventReceiver(std::unique_ptr<EventDelegate> &&delegate) : m_delegate(std::move(delegate)) {}
     virtual ~EventReceiver() {}
 
+    virtual void OnReload() {}
+
     const std::unique_ptr<EventDelegate>& Delegate() const
     {
         return m_delegate;

@@ -37,8 +37,7 @@ static std::unordered_map<void *, std::unique_ptr<EventReceiver>> eventReceivers
 
 static void Intercept(const Nan::FunctionCallbackInfo<v8::Value> &info)
 {
-    if (info.Length() != 2)
-    {
+    if (info.Length() != 2) {
         Nan::ThrowTypeError("Wrong number of arguments");
         return;
     }
@@ -55,10 +54,24 @@ static void Intercept(const Nan::FunctionCallbackInfo<v8::Value> &info)
     info.GetReturnValue().Set(Nan::Undefined());
 }
 
+static void OnReload(const Nan::FunctionCallbackInfo<v8::Value> &info)
+{
+    if (info.Length() != 1) {
+        Nan::ThrowTypeError("Wrong number of arguments");
+        return;
+    }
+
+    char *buf = node::Buffer::Data(info[0]);
+    void *handle = *reinterpret_cast<void **>(buf);
+
+    eventReceivers[handle]->OnReload();
+
+    info.GetReturnValue().Set(Nan::Undefined());
+}
+
 static void Unintercept(const Nan::FunctionCallbackInfo<v8::Value> &info)
 {
-    if (info.Length() != 1)
-    {
+    if (info.Length() != 1) {
         Nan::ThrowTypeError("Wrong number of arguments");
         return;
     }
@@ -76,6 +89,10 @@ static void InitModule(v8::Local<v8::Object> exports) {
     exports->Set(
         Nan::New("intercept").ToLocalChecked(),
         Nan::New<v8::FunctionTemplate>(Intercept)->GetFunction()
+    );
+    exports->Set(
+        Nan::New("onReload").ToLocalChecked(),
+        Nan::New<v8::FunctionTemplate>(OnReload)->GetFunction()
     );
     exports->Set(
         Nan::New("unintercept").ToLocalChecked(),
