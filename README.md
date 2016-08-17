@@ -34,7 +34,6 @@ win.webContents.once("did-finish-load", () => {
   receiver.on("leaveProximity", (ev) => {
     console.log("pen outgoing");
     console.log(ev.pointerId);
-
   });
   receiver.on("down", (ev) => {
     console.log("start drawing");
