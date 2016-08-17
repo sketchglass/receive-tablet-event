@@ -1,3 +1,5 @@
+"use strict";
+
 const {EventEmitter} = require('events');
 const addon = require('bindings')('addon.node');
 
@@ -36,9 +38,6 @@ class TabletEventReceiver extends EventEmitter {
   }
 }
 
-exports.TabletEventReceiver = TabletEventReceiver;
-
-// workaround for https://github.com/electron/electron/issues/6863
-exports.installTabletEventReceiver = function installTabletEventReceiver(browserWindow) {
+module.exports = function receiveTabletEvent(browserWindow) {
   return TabletEventReceiver.install(browserWindow);
-}
+};

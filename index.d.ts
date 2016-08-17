@@ -1,26 +1,30 @@
 import {EventEmitter} from "events";
 import Electron = require("electron");
 
-type PointerTypes = "eraser" | "pen" | "cursor" | "unknown";
+declare namespace receiveTabletEvent {
+  export type PointerTypes = "eraser" | "pen" | "cursor" | "unknown";
 
-export interface TabletEvent {
-  clientX: number;
-  clientY: number;
-  pressure: number;
-  // TODO
-  // tiltX: number;
-  // tiltY: number;
-  pointerType: PointerTypes;
-  pointerId: number;
-  preventDefault(): void;
+  export interface TabletEvent {
+    clientX: number;
+    clientY: number;
+    pressure: number;
+    // TODO
+    // tiltX: number;
+    // tiltY: number;
+    pointerType: PointerTypes;
+    pointerId: number;
+    preventDefault(): void;
+  }
+
+  export interface TabletEventReceiver extends EventEmitter {
+    on(name: "enterProximity", callback: (event: TabletEvent) => void): this;
+    on(name: "leaveProximity", callback: (event: TabletEvent) => void): this;
+    on(name: "down", callback: (event: TabletEvent) => void): this;
+    on(name: "up", callback: (event: TabletEvent) => void): this;
+    on(name: "move", callback: (event: TabletEvent) => void): this;
+  }
 }
 
-export declare class TabletEventReceiver extends EventEmitter {
-  constructor(window: Electron.BrowserWindow);
-  on(name: "enterProximity", callback: (event: TabletEvent) => void): this;
-  on(name: "leaveProximity", callback: (event: TabletEvent) => void): this;
-  on(name: "down", callback: (event: TabletEvent) => void): this;
-  on(name: "up", callback: (event: TabletEvent) => void): this;
-  on(name: "move", callback: (event: TabletEvent) => void): this;
-  dispose(): void;
-}
+declare function receiveTabletEvent(browserWindow: Electron.BrowserWindow): receiveTabletEvent.TabletEventReceiver;
+
+export = receiveTabletEvent;

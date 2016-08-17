@@ -1,10 +1,10 @@
 "use strict";
 
 const {remote} = require("electron");
-const {installTabletEventReceiver} = remote.require("receive-tablet-event");
+const receiveTabletEvent = remote.require("receive-tablet-event");
 
 document.addEventListener("DOMContentLoaded", () => {
-  const receiver = installTabletEventReceiver(remote.getCurrentWindow());
+  const receiver = receiveTabletEvent(remote.getCurrentWindow());
 
   let pressed = false;
   let x = 0;
