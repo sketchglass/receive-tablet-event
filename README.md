@@ -39,13 +39,16 @@ win.webContents.once("did-finish-load", () => {
   receiver.on("down", (ev) => {
     console.log("start drawing");
     console.log(ev.pointerId, ev.clientX, ev.clientY, ev.pressure);
+    ev.preventDefault(); // preventDefault to prevent further mouse events
   });
   receiver.on("move", (ev) => {
     console.log(ev.pointerId, ev.clientX, ev.clientY, ev.pressure);
+    ev.preventDefault();
   });
   receiver.on("up", (ev) => {
     console.log("end drawing");
     console.log(ev.pointerId, ev.clientX, ev.clientY, ev.pressure);
+    ev.preventDefault();
   });
 });
 ```
