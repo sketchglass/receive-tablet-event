@@ -34,7 +34,6 @@ class TabletEventReceiver extends EventEmitter {
   }
 
   handleEvent(type, clientX, clientY, pressure, pointerType, pointerId) {
-    console.log("handling events");
     switch (type) {
       case "down":
         if (this.insideCaptureArea(clientX, clientY)) {
