@@ -34,58 +34,58 @@ public:
         eventReceivers.erase(m_window);
     }
 
-    void OnEvent(NSEvent *event)
+    bool OnEvent(NSEvent *event)
     {
         switch (event.type) {
-            case NSTabletProximity: {
-                const char *type;
-                if (event.enteringProximity) {
-                    type = "enterProximity";
-                } else {
-                    type = "leaveProximity";
-                }
-                Delegate()->OnProximityEvent(type, pointerTypeString(event.pointingDeviceType), event.uniqueID);
+        case NSTabletProximity:
+        {
+            const char *type;
+            if (event.enteringProximity) {
+                type = "enterProximity";
+            } else {
+                type = "leaveProximity";
+            }
+            Delegate()->OnTabletEvent(type, 0, 0, 0, pointerTypeString(event.pointingDeviceType), event.uniqueID);
+            return false;
+        }
+        case NSLeftMouseDown:
+        case NSRightMouseDown:
+        case NSLeftMouseUp:
+        case NSRightMouseUp:
+        case NSMouseMoved:
+        case NSTabletPoint:
+        case NSLeftMouseDragged:
+        case NSRightMouseDragged:
+        {
+            const char *type;
+            switch (event.type) {
+                case NSLeftMouseDown:
+                case NSRightMouseDown:
+                type = "down";
+                break;
+                case NSLeftMouseUp:
+                case NSRightMouseUp:
+                type = "up";
+                break;
+                default:
+                type = "move";
                 break;
             }
-            case NSLeftMouseDown:
-            case NSRightMouseDown:
-            case NSLeftMouseUp:
-            case NSRightMouseUp:
-            case NSMouseMoved:
-            case NSTabletPoint:
-            case NSLeftMouseDragged:
-            case NSRightMouseDragged:
-            {
-                const char *type;
-                switch (event.type) {
-                    case NSLeftMouseDown:
-                    case NSRightMouseDown:
-                    type = "down";
-                    break;
-                    case NSLeftMouseUp:
-                    case NSRightMouseUp:
-                    type = "up";
-                    break;
-                    default:
-                    type = "move";
-                    break;
-                }
 
-                auto view = m_window.contentView;
-                auto windowPos = event.locationInWindow;
-                auto localPos = [view convertPoint: windowPos fromView: nil];
+            auto view = m_window.contentView;
+            auto windowPos = event.locationInWindow;
+            auto localPos = [view convertPoint: windowPos fromView: nil];
 
-                Delegate()->OnTabletEvent(
-                    type,
-                    localPos.x, view.bounds.size.height - localPos.y,
-                    event.pressure,
-                    pointerTypeString(event.pointingDeviceType),
-                    event.uniqueID
-                );
-                break;
-            }
-            default:
-            break;
+            return Delegate()->OnTabletEvent(
+                type,
+                localPos.x, view.bounds.size.height - localPos.y,
+                event.pressure,
+                pointerTypeString(event.pointingDeviceType),
+                event.uniqueID
+            );
+        }
+        default:
+            return false;
         }
     }
 
@@ -97,9 +97,10 @@ private:
 
 -(void)sendEventIntercept:(NSEvent *)event
 {
-    if (eventReceivers.find(self) != eventReceivers.end())
-    {
-        eventReceivers[self]->OnEvent(event);
+    if (eventReceivers.find(self) != eventReceivers.end()) {
+        if (eventReceivers[self]->OnEvent(event)) {
+            return;
+        }
     }
     [self sendEventIntercept:event];
 }

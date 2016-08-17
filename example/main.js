@@ -1,6 +1,4 @@
-const electron = require('electron');
-const {app} = electron;
-const {BrowserWindow} = electron;
+const {app, BrowserWindow, ipcMain} = require('electron');
 const {TabletEventReceiver} = require("receive-tablet-event");
 
 let win;
@@ -8,38 +6,33 @@ let win;
 function createWindow() {
   win = new BrowserWindow({width: 800, height: 600});
 
-  win.webContents.once("did-finish-load", () => {
-    receiver = new TabletEventReceiver(win);
-    receiver.on("enterProximity", (ev) => {
-      console.log("enterProximity");
-      console.log(ev);
-    });
-    receiver.on("leaveProximity", (ev) => {
-      console.log("leaveProximity");
-      console.log(ev);
-
-    });
-    receiver.on("down", (ev) => {
-      console.log("down");
-      console.log(ev);
-    });
-    receiver.on("move", (ev) => {
-      console.log("move")
-      console.log(ev);
-    });
-    receiver.on("up", (ev) => {
-      console.log("up");
-      console.log(ev);
-    });
-  })
-
   win.loadURL(`file://${__dirname}/index.html`);
 
   win.webContents.openDevTools();
 
   win.on('closed', () => {
-    receiver.dispose();
     win = null;
+  });
+
+  let receiver;
+
+  ipcMain.on("tablet:install", (ev, captureArea) => {
+    if (receiver) {
+      return;
+    }
+    receiver = new TabletEventReceiver(win);
+    receiver.captureArea = captureArea;
+    const eventNames = ["enterProximity", "leaveProximity", "down", "move", "up"];
+    for (const name of eventNames) {
+      receiver.on(name, (ev) => {
+        console.log(name);
+        console.log(ev);
+        win.webContents.send(`tablet:${name}`, ev);
+      });
+    }
+    win.on('closed', () => {
+      receiver.dispose();
+    })
   });
 }
 

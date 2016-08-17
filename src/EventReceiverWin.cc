@@ -70,7 +70,7 @@ public:
 
 			POINT origin{ 0, 0 };
 			MapWindowPoints(pointerInfo.hwndTarget, NULL, &origin, 1);
-	
+
 			double localX = globalX - origin.x;
 			double localY = globalY - origin.y;
 
@@ -84,13 +84,13 @@ public:
 			HDC hdc = GetDC(pointerInfo.hwndTarget);
 			double dpiScale = GetDeviceCaps(hdc, LOGPIXELSX) / 96.0;
 
-			Delegate()->OnTabletEvent(
+			*result = 0;
+			return Delegete()->OnTabletEvent(
 				eventType,
 				localX / dpiScale, localY / dpiScale,
 				pointerPenInfo.pressure / 1024.0,
 				penType, pointerInfo.pointerId
 			);
-			return true;
 		}
 		default:
 			break;
