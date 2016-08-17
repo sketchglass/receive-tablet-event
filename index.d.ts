@@ -16,7 +16,15 @@ declare namespace receiveTabletEvent {
     preventDefault(): void;
   }
 
+  export interface Rectangle {
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+  }
+
   export interface TabletEventReceiver extends EventEmitter {
+    captureArea: Rectangle;
     on(name: "enterProximity", callback: (event: TabletEvent) => void): this;
     on(name: "leaveProximity", callback: (event: TabletEvent) => void): this;
     on(name: "down", callback: (event: TabletEvent) => void): this;
