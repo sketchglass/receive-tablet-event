@@ -85,7 +85,7 @@ public:
 			double dpiScale = GetDeviceCaps(hdc, LOGPIXELSX) / 96.0;
 
 			*result = 0;
-			return Delegete()->OnTabletEvent(
+			return Delegate()->OnTabletEvent(
 				eventType,
 				localX / dpiScale, localY / dpiScale,
 				pointerPenInfo.pressure / 1024.0,
