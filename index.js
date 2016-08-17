@@ -21,7 +21,14 @@ class TabletEventReceiver extends EventEmitter {
   constructor(browserWindow) {
     super();
     this.windowHandle = browserWindow.getNativeWindowHandle();
-    addon.intercept(this.windowHandle, this.emit.bind(this));
+    addon.intercept(this.windowHandle, (type, clientX, clientY, pressure, pointerType, pointerId) => {
+      let handled = false;
+      const preventDefault = () => {
+        handled = true;
+      };
+      this.emit(type, {clientX, clientY, pressure, pointerType, pointerId, preventDefault})
+      return handled;
+    });
   }
 
   dispose() {

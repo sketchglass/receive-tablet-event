@@ -3,12 +3,7 @@ class EventDelegate
 {
 public:
     virtual ~EventDelegate() {}
-    virtual void OnProximityEvent(
-        const char *type,
-        const char *pointerType,
-        int pointerId
-    ) = 0;
-    virtual void OnTabletEvent(
+    virtual bool OnTabletEvent(
         const char *type,
         double clientX,
         double clientY,

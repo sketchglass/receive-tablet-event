@@ -9,22 +9,7 @@ class EventDelegateNode : public EventDelegate {
 public:
     EventDelegateNode(const FunctionPersistent &callback) : m_callback(callback) {}
 
-    void OnProximityEvent(
-        const char *type,
-        const char *pointerType,
-        int pointerId
-    ) override
-    {
-        v8::Local<v8::Object> event = Nan::New<v8::Object>();
-
-        event->Set(Nan::New("pointerType").ToLocalChecked(), Nan::New(pointerType).ToLocalChecked());
-        event->Set(Nan::New("pointerId").ToLocalChecked(), Nan::New(pointerId));
-
-        v8::Local<v8::Value> argv[] = { Nan::New(type).ToLocalChecked(), event };
-        Nan::New(m_callback)->Call(Nan::GetCurrentContext()->Global(), 2, argv);
-    }
-
-    void OnTabletEvent(
+    bool OnTabletEvent(
         const char *type,
         double clientX,
         double clientY,
@@ -33,18 +18,16 @@ public:
         int pointerId
     ) override
     {
-        v8::Local<v8::Object> event = Nan::New<v8::Object>();
-
-        event->Set(Nan::New("clientX").ToLocalChecked(), Nan::New(clientX));
-        event->Set(Nan::New("clientY").ToLocalChecked(), Nan::New(clientY));
-
-        event->Set(Nan::New("pressure").ToLocalChecked(), Nan::New(pressure));
-
-        event->Set(Nan::New("pointerType").ToLocalChecked(), Nan::New(pointerType).ToLocalChecked());
-        event->Set(Nan::New("pointerId").ToLocalChecked(), Nan::New(pointerId));
-
-        v8::Local<v8::Value> argv[] = { Nan::New(type).ToLocalChecked(), event };
-        Nan::New(m_callback)->Call(Nan::GetCurrentContext()->Global(), 2, argv);
+        v8::Local<v8::Value> argv[] = {
+            Nan::New(type).ToLocalChecked(),
+            Nan::New(clientX),
+            Nan::New(clientY),
+            Nan::New(pressure),
+            Nan::New(pointerType).ToLocalChecked(),
+            Nan::New(pointerId)
+        };
+        auto result = Nan::New(m_callback)->Call(Nan::GetCurrentContext()->Global(), 6, argv);
+        return result->BooleanValue();
     }
 private:
     FunctionPersistent m_callback;
@@ -72,29 +55,6 @@ static void Intercept(const Nan::FunctionCallbackInfo<v8::Value> &info)
     info.GetReturnValue().Set(Nan::Undefined());
 }
 
-static void SetTargetRectangle(const Nan::FunctionCallbackInfo<v8::Value> &info)
-{
-    if (info.Length() != 5)
-    {
-        Nan::ThrowTypeError("Wrong number of arguments");
-        return;
-    }
-    char *buf = node::Buffer::Data(info[0]);
-    void *handle = *reinterpret_cast<void **>(buf);
-
-    auto left = info[1]->NumberValue();
-    auto top = info[2]->NumberValue();
-    auto width = info[3]->NumberValue();
-    auto height = info[4]->NumberValue();
-
-    if (eventReceivers.find(handle) != eventReceivers.end()) {
-        Rectangle rect { left, top, width, height };
-        eventReceivers[handle]->SetTargetRectangle(rect);
-    }
-
-    info.GetReturnValue().Set(Nan::Undefined());
-}
-
 static void Unintercept(const Nan::FunctionCallbackInfo<v8::Value> &info)
 {
     if (info.Length() != 1)
@@ -116,10 +76,6 @@ static void InitModule(v8::Local<v8::Object> exports) {
     exports->Set(
         Nan::New("intercept").ToLocalChecked(),
         Nan::New<v8::FunctionTemplate>(Intercept)->GetFunction()
-    );
-    exports->Set(
-        Nan::New("setTargetRectangle").ToLocalChecked(),
-        Nan::New<v8::FunctionTemplate>(SetTargetRectangle)->GetFunction()
     );
     exports->Set(
         Nan::New("unintercept").ToLocalChecked(),

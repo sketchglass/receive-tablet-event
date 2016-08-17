@@ -45,7 +45,8 @@ public:
             } else {
                 type = "leaveProximity";
             }
-            return HandleProximityEvent(type, pointerTypeString(event.pointingDeviceType), event.uniqueID);
+            Delegate()->OnTabletEvent(type, 0, 0, 0, pointerTypeString(event.pointingDeviceType), event.uniqueID);
+            return false;
         }
         case NSLeftMouseDown:
         case NSRightMouseDown:
@@ -75,7 +76,7 @@ public:
             auto windowPos = event.locationInWindow;
             auto localPos = [view convertPoint: windowPos fromView: nil];
 
-            return HandleTabletEvent(
+            return Delegate()->OnTabletEvent(
                 type,
                 localPos.x, view.bounds.size.height - localPos.y,
                 event.pressure,
