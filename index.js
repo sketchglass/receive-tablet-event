@@ -10,6 +10,10 @@ class TabletEventReceiver extends EventEmitter {
     } else {
       const receiver = new TabletEventReceiver(browserWindow);
       receivers.set(browserWindow, receiver);
+      browserWindow.on('closed', () => {
+        receivers.delete(browserWindow);
+        receiver.dispose();
+      });
       return receiver;
     }
   }
@@ -18,9 +22,6 @@ class TabletEventReceiver extends EventEmitter {
     super();
     this.windowHandle = browserWindow.getNativeWindowHandle();
     addon.intercept(this.windowHandle, this.emit.bind(this));
-    browserWindow.on('closed', () => {
-      this.dispose();
-    });
   }
 
   dispose() {
