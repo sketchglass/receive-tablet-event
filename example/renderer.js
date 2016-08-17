@@ -18,13 +18,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const rect = document.getElementById("capture-area").getBoundingClientRect();
-
-  function preventInside(ev) {
-    const {clientX, clientY} = ev;
-    if (rect.left <= clientX && clientX < rect.left + rect.width && rect.top <= clientY && clientY < rect.top + rect.height) {
-      console.log("prevent default");
-      ev.preventDefault()
-    }
+  receiver.captureArea = {
+    left: Math.round(rect.left),
+    top: Math.round(rect.top),
+    width: Math.round(rect.width),
+    height: Math.round(rect.height),
   }
 
   receiver.on("enterProximity", (ev) => {
@@ -38,7 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
   receiver.on("down", (ev) => {
     console.log("down");
     console.log(ev);
-    preventInside(ev);
     pressed = true;
     x = ev.clientX;
     y = ev.clientY;
@@ -48,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
   receiver.on("move", (ev) => {
     console.log("move")
     console.log(ev);
-    preventInside(ev);
     x = ev.clientX;
     y = ev.clientY;
     pressure = ev.pressure;
@@ -57,7 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
   receiver.on("up", (ev) => {
     console.log("up");
     console.log(ev);
-    preventInside(ev);
     pressed = false;
     x = ev.clientX;
     y = ev.clientY;
