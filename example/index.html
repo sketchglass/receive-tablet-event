@@ -2,13 +2,28 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>receive-tablet-event Example</title>
+    <style>
+      html, body {
+        font-family: sans-serif;
+      }
+      #capture-area {
+        width: 320px;
+        height: 240px;
+        padding: 40px;
+        border: 1px solid grey;
+      }
+    </style>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chrome <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+    <h1>receive-tablet-event Example</h1>
+    <div id="capture-area">
+      <div id="info">
+        <p>Position: <span id="position"></span></p>
+        <p>Pressure: <span id="pressure"></span></p>
+        <p>Pressed: <span id="pressed"></span></p>
+      </div>
+    </div>
   </body>
   <script>
     require("./renderer");
