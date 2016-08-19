@@ -5,7 +5,7 @@ Receive native digitizer (tablet) event in Electron
 ## Supported platforms
 
 - [x] Mac
-- [ ] Windows
+- [x] Windows
 - [ ] Linux (X11)
 
 ## Usage
