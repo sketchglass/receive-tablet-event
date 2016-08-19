@@ -87,6 +87,7 @@ public:
 
 			HDC hdc = GetDC(pointerInfo.hwndTarget);
 			double dpiScale = GetDeviceCaps(hdc, LOGPIXELSX) / 96.0;
+			ReleaseDC(pointerInfo.hwndTarget, hdc);
 
 			*result = 0;
 			return Delegate()->OnTabletEvent(
