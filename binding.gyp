@@ -18,6 +18,10 @@
         }],
         ['OS=="win"', {
           "sources": [ "src/EventReceiverWin.cc" ]
+        }],
+        ['OS=="linux"', {
+          "sources": [ "src/EventReceiverLinux.cc" ],
+          "cflags" : [ "-std=c++1", "-stdlib=libc++" ]
         }]
       ]
     }
