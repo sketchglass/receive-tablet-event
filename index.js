@@ -43,7 +43,8 @@ class TabletEventReceiver extends EventEmitter {
         break;
     }
     this.emit(type, {button, clientX, clientY, pressure, pointerType, pointerId})
-    return true;
+    // do not prevent original event handler outside Windows
+    return process.platform == "win32";
   }
 
   dispose() {
