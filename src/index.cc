@@ -11,6 +11,7 @@ public:
 
     bool OnTabletEvent(
         const char *type,
+        int button,
         double clientX,
         double clientY,
         double pressure,
@@ -20,6 +21,7 @@ public:
     {
         v8::Local<v8::Value> argv[] = {
             Nan::New(type).ToLocalChecked(),
+            Nan::New(button),
             Nan::New(clientX),
             Nan::New(clientY),
             Nan::New(pressure),

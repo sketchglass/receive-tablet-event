@@ -12,6 +12,7 @@ export interface TabletEvent {
   // tiltY: number;
   pointerType: PointerTypes;
   pointerId: number;
+  button: number;
   preventDefault(): void;
 }
 
