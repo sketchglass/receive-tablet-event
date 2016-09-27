@@ -64,6 +64,23 @@ public:
 				break;
 			}
 
+			int button;
+			if (pointerInfo.pointerFlags & POINTER_FLAG_FIRSTBUTTON) {
+				button = 0;
+			}
+			else if (pointerInfo.pointerFlags & POINTER_FLAG_SECONDBUTTON) {
+				button = 2;
+			}
+			else if (pointerInfo.pointerFlags & POINTER_FLAG_THIRDBUTTON) {
+				button = 1;
+			}
+			else if (pointerInfo.pointerFlags & POINTER_FLAG_FOURTHBUTTON) {
+				button = 3;
+			}
+			else if (pointerInfo.pointerFlags & POINTER_FLAG_FIFTHBUTTON) {
+				button = 4;
+			}
+
 			RECT himetricRect, displayRect;
 			GetPointerDeviceRects(pointerInfo.sourceDevice, &himetricRect, &displayRect);
 
@@ -92,6 +109,7 @@ public:
 			*result = 0;
 			return Delegate()->OnTabletEvent(
 				eventType,
+				button,
 				localX / dpiScale, localY / dpiScale,
 				pointerPenInfo.pressure / 1024.0,
 				penType, pointerInfo.pointerId
