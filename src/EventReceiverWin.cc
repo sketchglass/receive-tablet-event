@@ -64,7 +64,7 @@ public:
 				break;
 			}
 
-			int button;
+			int button = 0;
 			if (pointerInfo.pointerFlags & POINTER_FLAG_FIRSTBUTTON) {
 				button = 0;
 			}
