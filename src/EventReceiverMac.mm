@@ -45,7 +45,7 @@ public:
             } else {
                 type = "leaveProximity";
             }
-            Delegate()->OnTabletEvent(type, 0, 0, 0, pointerTypeString(event.pointingDeviceType), event.uniqueID);
+            Delegate()->OnTabletEvent(type, 0, 0, 0, 0, pointerTypeString(event.pointingDeviceType), event.uniqueID);
             return false;
         }
         case NSLeftMouseDown:
@@ -59,15 +59,15 @@ public:
         {
             const char *type;
             switch (event.type) {
-                case NSLeftMouseDown:
-                case NSRightMouseDown:
+            case NSLeftMouseDown:
+            case NSRightMouseDown:
                 type = "down";
                 break;
-                case NSLeftMouseUp:
-                case NSRightMouseUp:
+            case NSLeftMouseUp:
+            case NSRightMouseUp:
                 type = "up";
                 break;
-                default:
+            default:
                 type = "move";
                 break;
             }
@@ -76,8 +76,22 @@ public:
             auto windowPos = event.locationInWindow;
             auto localPos = [view convertPoint: windowPos fromView: nil];
 
+            int button;
+            switch (event.buttonNumber) {
+            case 1:
+                button = 2;
+                break;
+            case 2:
+                button = 1;
+                break;
+            default:
+                button = event.buttonNumber;
+                break;
+            }
+
             return Delegate()->OnTabletEvent(
                 type,
+                button,
                 localPos.x, view.bounds.size.height - localPos.y,
                 event.pressure,
                 pointerTypeString(event.pointingDeviceType),

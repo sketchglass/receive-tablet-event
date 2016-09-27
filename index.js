@@ -21,7 +21,7 @@ class TabletEventReceiver extends EventEmitter {
     return left <= clientX && clientX < left + width && top <= clientY && clientY < top + height;
   }
 
-  handleEvent(type, clientX, clientY, pressure, pointerType, pointerId) {
+  handleEvent(type, button, clientX, clientY, pressure, pointerType, pointerId) {
     switch (type) {
       case "down":
         if (this.insideCaptureArea(clientX, clientY)) {
@@ -42,7 +42,7 @@ class TabletEventReceiver extends EventEmitter {
         }
         break;
     }
-    this.emit(type, {clientX, clientY, pressure, pointerType, pointerId})
+    this.emit(type, {button, clientX, clientY, pressure, pointerType, pointerId})
     return true;
   }
 
