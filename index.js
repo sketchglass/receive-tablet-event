@@ -8,6 +8,7 @@ class TabletEventReceiver extends EventEmitter {
     super();
     this.captureArea = {left: 0, top: 0, width: 0, height: 0};
     this.capturedPointers = new Set();
+    this.browserWindow = browserWindow;
     this.windowHandle = browserWindow.getNativeWindowHandle();
     addon.intercept(this.windowHandle, this.handleEvent.bind(this));
     addon.onReload(this.windowHandle);
@@ -42,12 +43,14 @@ class TabletEventReceiver extends EventEmitter {
         }
         break;
     }
+    this.browserWindow.webContents.focus();
     this.emit(type, {button, clientX, clientY, pressure, pointerType, pointerId})
     // do not prevent original event handler outside Windows
     return process.platform == "win32";
   }
 
   dispose() {
+    this.browserWindow = undefined;
     addon.unintercept(this.windowHandle);
   }
 }
