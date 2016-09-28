@@ -12,10 +12,7 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "electron-prebuilt": "^1.4.1",
+    "electron-prebuilt": "1.4.1",
     "electron-rebuild": "^1.2.1"
-  },
-  "dependencies": {
-    "receive-tablet-event": ".."
   }
 }

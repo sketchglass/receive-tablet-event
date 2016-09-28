@@ -1,5 +1,5 @@
 const {app, BrowserWindow, ipcMain} = require('electron');
-const {TabletEventReceiver} = require("receive-tablet-event");
+const {TabletEventReceiver} = require("..");
 
 let win;
 

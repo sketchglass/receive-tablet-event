@@ -53,6 +53,7 @@ receiver.on("up", (ev) => {
 ## Run example
 
 ```
+npm run rebuild
 cd example
 npm install
 npm start
