@@ -10,7 +10,7 @@
     "nan": "^2.4.0"
   },
   "scripts": {
-    "rebuild": "node-gyp rebuild --target=1.4.1 --arch=x64 --dist-url=https://atom.io/download/atom-shell",
+    "rebuild": "node-gyp rebuild --target=1.4.5 --arch=x64 --dist-url=https://atom.io/download/atom-shell",
     "test": "node index.js",
     "install": "node-gyp rebuild",
     "example": "cd example && npm start"
