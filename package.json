@@ -1,6 +1,6 @@
 {
   "name": "receive-tablet-event",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "index.js",
   "typings": "index.d.ts",
   "author": "Ryohei Ikegami <iofg2100@gmail.com>",
