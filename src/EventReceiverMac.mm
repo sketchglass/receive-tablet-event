@@ -45,7 +45,7 @@ public:
             } else {
                 type = "leaveProximity";
             }
-            Delegate()->OnTabletEvent(type, 0, 0, 0, 0, pointerTypeString(event.pointingDeviceType), event.uniqueID);
+            Delegate()->OnTabletEvent(type, 0, 0, 0, 0, pointerTypeString(event.pointingDeviceType), event.uniqueID, false, false, false, false);
             return false;
         }
         case NSLeftMouseDown:
@@ -95,7 +95,11 @@ public:
                 localPos.x, view.bounds.size.height - localPos.y,
                 event.pressure,
                 pointerTypeString(event.pointingDeviceType),
-                event.uniqueID
+                event.uniqueID,
+                event.modifierFlags & NSEventModifierFlagOption,
+                event.modifierFlags & NSEventModifierFlagControl,
+                event.modifierFlags & NSEventModifierFlagCommand,
+                event.modifierFlags & NSEventModifierFlagShift
             );
         }
         default:
