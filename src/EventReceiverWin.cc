@@ -112,7 +112,11 @@ public:
 				button,
 				localX / dpiScale, localY / dpiScale,
 				pointerPenInfo.pressure / 1024.0,
-				penType, pointerInfo.pointerId
+				penType, pointerInfo.pointerId,
+				GetKeyState(VK_MENU) < 0,
+				GetKeyState(VK_CONTROL) < 0,
+				false,
+				GetKeyState(VK_SHIFT) < 0
 			);
 		}
 		default:
