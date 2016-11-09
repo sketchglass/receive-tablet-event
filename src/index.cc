@@ -16,7 +16,11 @@ public:
         double clientY,
         double pressure,
         const char *pointerType,
-        int pointerId
+        int pointerId,
+        bool altKey,
+        bool ctrlKey,
+        bool metaKey,
+        bool shiftKey
     ) override
     {
         v8::Local<v8::Value> argv[] = {
@@ -26,9 +30,13 @@ public:
             Nan::New(clientY),
             Nan::New(pressure),
             Nan::New(pointerType).ToLocalChecked(),
-            Nan::New(pointerId)
+            Nan::New(pointerId),
+            Nan::New(altKey),
+            Nan::New(ctrlKey),
+            Nan::New(metaKey),
+            Nan::New(shiftKey),
         };
-        auto result = Nan::New(m_callback)->Call(Nan::GetCurrentContext()->Global(), 6, argv);
+        auto result = Nan::New(m_callback)->Call(Nan::GetCurrentContext()->Global(), sizeof(argv) / sizeof(*argv), argv);
         return result->BooleanValue();
     }
 private:

@@ -13,6 +13,10 @@ export interface TabletEvent {
   pointerType: PointerTypes;
   pointerId: number;
   button: number;
+  ctrlKey: boolean;
+  altKey: boolean;
+  metaKey: boolean;
+  shiftKey: boolean;
   preventDefault(): void;
 }
 

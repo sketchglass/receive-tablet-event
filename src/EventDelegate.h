@@ -10,6 +10,10 @@ public:
         double clientY,
         double pressure,
         const char *pointerType,
-        int pointerId
+        int pointerId,
+        bool altKey,
+        bool ctrlKey,
+        bool metaKey,
+        bool shiftKey
     ) = 0;
 };

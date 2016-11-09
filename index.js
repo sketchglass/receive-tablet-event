@@ -22,7 +22,7 @@ class TabletEventReceiver extends EventEmitter {
     return left <= clientX && clientX < left + width && top <= clientY && clientY < top + height;
   }
 
-  handleEvent(type, button, clientX, clientY, pressure, pointerType, pointerId) {
+  handleEvent(type, button, clientX, clientY, pressure, pointerType, pointerId, altKey, ctrlKey, metaKey, shiftKey) {
     switch (type) {
       case "down":
         if (this.insideCaptureArea(clientX, clientY)) {
@@ -44,7 +44,7 @@ class TabletEventReceiver extends EventEmitter {
         break;
     }
     this.browserWindow.webContents.focus();
-    this.emit(type, {button, clientX, clientY, pressure, pointerType, pointerId})
+    this.emit(type, {button, clientX, clientY, pressure, pointerType, pointerId, altKey, ctrlKey, metaKey, shiftKey})
     // do not prevent original event handler outside Windows
     return process.platform == "win32";
   }

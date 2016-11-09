@@ -4,14 +4,16 @@ const {ipcRenderer} = require("electron");
 
 document.addEventListener("DOMContentLoaded", () => {
   let pressed = false;
-  let x = 0;
-  let y = 0;
-  let pressure = 0;
 
-  function updateInfo() {
-    document.getElementById("position").innerText = `(${x}, ${y})`;
+  function updateInfo(ev) {
+    const {clientX, clientY, pressure, altKey, ctrlKey, metaKey, shiftKey} = ev
+    document.getElementById("position").innerText = `(${clientX}, ${clientY})`;
     document.getElementById("pressure").innerText = pressure;
     document.getElementById("pressed").innerText = pressed;
+    document.getElementById("alt").innerText = altKey;
+    document.getElementById("ctrl").innerText = ctrlKey;
+    document.getElementById("meta").innerText = metaKey;
+    document.getElementById("shift").innerText = shiftKey;
   }
 
   const rect = document.getElementById("capture-area").getBoundingClientRect();
@@ -25,22 +27,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   ipcRenderer.on("tablet:down", (ev, arg) => {
     pressed = true;
-    x = arg.clientX;
-    y = arg.clientY;
-    pressure = arg.pressure;
-    updateInfo();
+    updateInfo(arg);
   });
   ipcRenderer.on("tablet:move", (ev, arg) => {
-    x = arg.clientX;
-    y = arg.clientY;
-    pressure = arg.pressure;
-    updateInfo();
+    updateInfo(arg);
   });
   ipcRenderer.on("tablet:up", (ev, arg) => {
     pressed = false;
-    x = arg.clientX;
-    y = arg.clientY;
-    pressure = arg.pressure;
-    updateInfo();
+    updateInfo(arg);
   });
 });
