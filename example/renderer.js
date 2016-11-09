@@ -6,8 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let pressed = false;
 
   function updateInfo(ev) {
-    const {x, y, pressure, altKey, ctrlKey, metaKey, shiftKey} = ev
-    document.getElementById("position").innerText = `(${x}, ${y})`;
+    const {clientX, clientY, pressure, altKey, ctrlKey, metaKey, shiftKey} = ev
+    document.getElementById("position").innerText = `(${clientX}, ${clientY})`;
     document.getElementById("pressure").innerText = pressure;
     document.getElementById("pressed").innerText = pressed;
     document.getElementById("alt").innerText = altKey;
