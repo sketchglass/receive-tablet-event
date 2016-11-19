@@ -21,7 +21,7 @@
         }],
         ['OS=="linux"', {
           "sources": [ "src/EventReceiverLinux.cc" ],
-          "cflags" : [ "-std=c++1", "-stdlib=libc++" ]
+          "cflags" : [ "-std=c++11" ]
         }]
       ]
     }
